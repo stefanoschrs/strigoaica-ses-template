@@ -1,4 +1,4 @@
-# [Strigoaica](https://github.com/stefanoschrs/strigoaica) - Amazon Simple Email Service (template) Strategy
+# [Strigoaica](https://github.com/strigoaica/strigoaica) - Amazon Simple Email Service (template) Strategy
 
 ## Configure
 - Create a credentials file at ~/.aws/credentials on Mac/Linux or C:\Users\USERNAME\.aws\credentials on Windows
