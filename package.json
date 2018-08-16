@@ -1,0 +1,22 @@
+{
+  "name": "strigoaica-ses-template",
+  "version": "0.0.1",
+  "description": "Strigoaica - Amazon Simple Email Service Strategy",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "agathias": "^0.0.4",
+    "aws-sdk": "^2.293.0",
+    "strigoaica-strategy": "0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^10.5.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stefanos Chrs <chrsstefanos@gmail.com>",
+  "license": "MIT"
+}
