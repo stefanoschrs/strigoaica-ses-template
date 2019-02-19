@@ -41,7 +41,7 @@ var SESTemplate = /** @class */ (function () {
     function SESTemplate(options) {
         this.templatesPath = options.templatesPath;
         this.type = 'ses-template';
-        this.logger = Agathias.getChild('ses-template');
+        this.logger = Agathias.getChild(this.type);
         this.sourceEmail = options.sourceEmail;
         AWS.config.credentials = new AWS.SharedIniFileCredentials({
             profile: options.profile
@@ -55,7 +55,7 @@ var SESTemplate = /** @class */ (function () {
             var recipients, templateConfig;
             return __generator(this, function (_a) {
                 this.logger.debug({ templateId: templateId, data: data });
-                if (data.to === undefined || data.payload === undefined) {
+                if (data.to === undefined) {
                     return [2 /*return*/, Promise.reject(new Error('Missing parameters'))];
                 }
                 recipients = Array.isArray(data.to) ? data.to : [data.to];
@@ -63,17 +63,20 @@ var SESTemplate = /** @class */ (function () {
                     Destination: {
                         ToAddresses: recipients
                     },
-                    Source: this.sourceEmail,
+                    Source: data.from || this.sourceEmail,
                     Template: templateId,
-                    TemplateData: JSON.stringify(data.payload)
+                    TemplateData: JSON.stringify(data.payload || {})
                 };
                 if (process.env.NODE_ENV !== 'production') {
                     this.logger.debug({ templateConfig: templateConfig });
                     return [2 /*return*/, Promise.resolve(templateConfig)];
                 }
-                return [2 /*return*/, new AWS.SES({ apiVersion: '2010-12-01' })
-                        .sendTemplatedEmail(templateConfig)
-                        .promise()];
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        return new AWS.SES({ apiVersion: '2010-12-01' })
+                            .sendTemplatedEmail(templateConfig, function (err, res) {
+                            return err ? reject(err) : resolve(res);
+                        });
+                    })];
             });
         });
     };

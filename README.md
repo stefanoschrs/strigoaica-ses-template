@@ -1,6 +1,6 @@
 # [Strigoaica](https://github.com/strigoaica/strigoaica) - Amazon Simple Email Service (template) Strategy
 
-## Configure
+## Configuration
 - Create a credentials file at ~/.aws/credentials on Mac/Linux or C:\Users\USERNAME\.aws\credentials on Windows
 ```
 [your_profile]
@@ -17,3 +17,6 @@ ses-template:
 ```
 
 *ref: [https://aws.amazon.com/ses](https://aws.amazon.com/ses)*
+
+### Notes
+- To overwrite the default `sourceEmail` simply provide a `from` value to the request body

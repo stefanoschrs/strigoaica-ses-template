@@ -26,7 +26,7 @@ class SESTemplate implements Strategy {
     this.templatesPath = options.templatesPath
     this.type = 'ses-template'
 
-    this.logger = Agathias.getChild('ses-template')
+    this.logger = Agathias.getChild(this.type)
 
     this.sourceEmail = options.sourceEmail
 
@@ -38,10 +38,10 @@ class SESTemplate implements Strategy {
     })
   }
 
-  async send (templateId, data: { to: string|string[], payload: any }) {
+  async send (templateId, data: { to: string|string[], from?: string, payload?: any }) {
     this.logger.debug({ templateId, data })
 
-    if (data.to === undefined || data.payload === undefined) {
+    if (data.to === undefined) {
       return Promise.reject(new Error('Missing parameters'))
     }
 
@@ -50,9 +50,9 @@ class SESTemplate implements Strategy {
       Destination: {
         ToAddresses: recipients
       },
-      Source: this.sourceEmail,
+      Source: data.from ||this.sourceEmail,
       Template: templateId,
-      TemplateData: JSON.stringify(data.payload)
+      TemplateData: JSON.stringify(data.payload || {})
     }
 
     if (process.env.NODE_ENV !== 'production') {
@@ -60,9 +60,12 @@ class SESTemplate implements Strategy {
       return Promise.resolve(templateConfig)
     }
 
-    return new AWS.SES({ apiVersion: '2010-12-01' })
-      .sendTemplatedEmail(templateConfig)
-      .promise()
+    return new Promise((resolve, reject) =>
+      new AWS.SES({ apiVersion: '2010-12-01' })
+        .sendTemplatedEmail(templateConfig, (err, res) =>
+          err ? reject(err) : resolve(res)
+        )
+    )
   }
 }
 
